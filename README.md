@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpongeBob Timecard Generator
 
-## Getting Started
+A client-side **SpongeBob-style timecard meme generator**. Type a caption, pick a
+background and colors, choose an aspect ratio, and get a live preview you can
+download as a PNG or share to social media. All image generation happens in the
+browser via [`html-to-image`](https://github.com/bubkoo/html-to-image) — no server
+is involved in producing the image.
 
-First, run the development server:
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev      # http://localhost:3000
+bun run build    # production build
+bun run lint     # eslint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Caption** with an auto-fitting font: short text renders large, long text
+  shrinks and wraps to fit the frame without clipping.
+- **Backgrounds** — a thumbnail gallery, center-cropped (`object-cover`) to the
+  chosen aspect ratio.
+- **Colors** — one-click classic presets plus custom text-color and shadow-color
+  pickers.
+- **Aspect ratios** — 16:9, 4:3, or 9:16, controlling both preview and export.
+- **Download** a crisp PNG (1920×1080 / 1440×1080 / 1080×1920).
+- **Share** links for X/Twitter, Facebook, and Reddit.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> Share links carry text + a URL only — they can't attach the image. Download the
+> PNG first, then attach it in the post.
 
-## Learn More
+## How it works
 
-To learn more about Next.js, take a look at the following resources:
+- **One node for preview and export.** The timecard is rendered once and sizes all
+  typography in container-relative units (`container-type: size` + `cqw`), so
+  rasterizing the same node at a large fixed pixel size yields an identical, crisp
+  image. `html-to-image` is called with explicit export dimensions per aspect ratio.
+- **Auto-fit font size** is computed by binary-searching the largest size that fits
+  the frame, returned in `cqw` (not px) so the on-screen preview and the exported
+  image always match.
+- **Fonts.** The "Some Time Later" font (SIL OFL 1.1) is self-hosted via
+  `next/font/local`. Export waits for `document.fonts.ready` and embeds font CSS so
+  the correct font is always captured.
+- **State** lives in a single reducer; selecting a preset sets both colors atomically,
+  and editing a color deselects the active preset.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind CSS v4 ·
+shadcn/ui (`@base-ui/react`) · `html-to-image` · `react-colorful` · `next-themes`.
 
-## Deploy on Vercel
+## Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The full knowledgebase lives in [`docs/`](docs/):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [docs/architecture.md](docs/architecture.md) — structure, state model, preview↔export
+  pipeline, auto-fit technique, font embedding, theming.
+- [docs/features.md](docs/features.md) — user-facing behavior and limitations.
+- [docs/customization.md](docs/customization.md) — add backgrounds, presets, aspect
+  ratios; change export resolution or the font.
+
+Documentation policy (see [`AGENTS.md`](AGENTS.md)): when a feature changes, update the
+relevant doc in place — don't append changelogs.

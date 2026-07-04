@@ -12,11 +12,13 @@
 
 The `id` must be unique and stable. Optionally set `thumbnailSrc` (a smaller image for
 the picker grid) and `credit`. To change the default selection, update
-`DEFAULT_BACKGROUND_ID`.
+`DEFAULT_BACKGROUND_ID` (currently the first entry).
 
-The current defaults are placeholder SVGs (`bikini-bottom.svg`, `jellyfish-fields.svg`,
-`sunset-reef.svg`) — replace them with real artwork by adding files and updating the
-manifest.
+Because one source is cropped across every ratio, size each image to cover the widest
+export — **1920×1080 minimum**. The bundled set is all 1080-tall (16:9 art at 1920×1080,
+4:3 art at ~1440×1080), which is exactly the current export height with no headroom:
+**do not raise `exportW`/`exportH` past 1080p** or every background upscales. A 4:3-framed
+source shown at 16:9 already upscales ~33% (tolerable, but visibly softer).
 
 ## Add a color preset
 

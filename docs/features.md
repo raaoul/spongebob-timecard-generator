@@ -8,10 +8,12 @@ wraps (up to a max line count) so it never overflows or clips.
 
 ## Backgrounds
 
-A thumbnail grid lets you pick a background. Backgrounds are center-cropped
-(`object-cover`) to fill whatever aspect ratio is selected, so any source image works
-regardless of its native dimensions. The default backgrounds are placeholder SVGs — see
-[customization.md](customization.md) to add real images.
+A thumbnail grid lets you pick a background. The set ships with 24 SpongeBob
+title-card scenes (12 framed 16:9 at 1920×1080, 12 framed 4:3 at ~1440×1080).
+Backgrounds are center-cropped (`object-cover`) to fill whatever aspect ratio is
+selected, so any source image works regardless of its native dimensions — a 4:3
+source shown at 16:9 upscales ~33%, which is why exports stay at 1× (see
+[customization.md](customization.md)).
 
 ## Colors
 

@@ -3,8 +3,12 @@
 ## Caption
 
 A textarea drives the caption. Multi-line input and characters like "…" are supported.
-The font size **auto-fits** the frame: short text renders large, long text shrinks and
-wraps (up to a max line count) so it never overflows or clips.
+
+By default the font size **auto-fits** the frame: short text renders large, long text
+shrinks and wraps (up to a max line count) so it never overflows or clips. Uncheck
+**Auto-fit** to set the size by hand with the slider or number input. The manual range is
+capped at the auto-fit size — the largest that still fits — so a hand-picked size can
+never overflow the frame either.
 
 ## Backgrounds
 

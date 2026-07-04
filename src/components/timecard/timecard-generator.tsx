@@ -52,6 +52,12 @@ export function TimecardGenerator() {
     };
   }, [fontsReady]);
 
+  // fitCqw is the largest size that fits, so it doubles as the max in manual
+  // mode — capping there prevents caption overflow.
+  const effectiveCqw = state.autoFit
+    ? fitCqw
+    : Math.min(state.fontSize, fitCqw);
+
   const background = getBackground(state.backgroundId);
 
   return (
@@ -76,7 +82,7 @@ export function TimecardGenerator() {
             shadowColor={state.shadowColor}
             aspectRatio={state.aspectRatio}
             fontFamily={fontFamily}
-            fitCqw={fitCqw}
+            fitCqw={effectiveCqw}
             className="rounded-xl shadow-sm"
           />
           <ExportActions
@@ -94,6 +100,11 @@ export function TimecardGenerator() {
             <CaptionControls
               value={state.caption}
               onChange={actions.setCaption}
+              autoFit={state.autoFit}
+              onAutoFitChange={actions.setAutoFit}
+              fontSize={state.autoFit ? fitCqw : state.fontSize}
+              maxFontSize={fitCqw}
+              onFontSizeChange={actions.setFontSize}
             />
             <Separator />
             <BackgroundPicker

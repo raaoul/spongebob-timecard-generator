@@ -5,6 +5,7 @@ import {
 } from "@/lib/aspect-ratios";
 import { DEFAULT_BACKGROUND_ID } from "@/lib/backgrounds";
 import { COLOR_PRESETS, DEFAULT_PRESET_ID, getPreset } from "@/lib/color-presets";
+import { CAPTION_LAYOUT } from "@/hooks/use-auto-fit-font";
 
 export interface TimecardState {
   caption: string;
@@ -14,6 +15,10 @@ export interface TimecardState {
   /** Which preset is active, or null once a color is hand-edited. */
   activePresetId: string | null;
   aspectRatio: AspectRatioId;
+  /** When true, the caption size auto-fits the frame and ignores fontSize. */
+  autoFit: boolean;
+  /** Manual caption size in `cqw`; capped at the fitting max so it can't overflow. */
+  fontSize: number;
 }
 
 type TimecardAction =
@@ -23,6 +28,8 @@ type TimecardAction =
   | { type: "setShadowColor"; shadowColor: string }
   | { type: "applyPreset"; presetId: string }
   | { type: "setAspectRatio"; aspectRatio: AspectRatioId }
+  | { type: "setAutoFit"; autoFit: boolean }
+  | { type: "setFontSize"; fontSize: number }
   | { type: "reset" };
 
 function buildInitialState(): TimecardState {
@@ -34,6 +41,8 @@ function buildInitialState(): TimecardState {
     shadowColor: preset.shadow,
     activePresetId: preset.id,
     aspectRatio: DEFAULT_ASPECT_RATIO_ID,
+    autoFit: true,
+    fontSize: CAPTION_LAYOUT.maxCqw,
   };
 }
 
@@ -60,6 +69,10 @@ function reducer(state: TimecardState, action: TimecardAction): TimecardState {
     }
     case "setAspectRatio":
       return { ...state, aspectRatio: action.aspectRatio };
+    case "setAutoFit":
+      return { ...state, autoFit: action.autoFit };
+    case "setFontSize":
+      return { ...state, fontSize: action.fontSize };
     case "reset":
       return buildInitialState();
     default:
@@ -82,6 +95,9 @@ export function useTimecardState() {
         dispatch({ type: "applyPreset", presetId }),
       setAspectRatio: (aspectRatio: AspectRatioId) =>
         dispatch({ type: "setAspectRatio", aspectRatio }),
+      setAutoFit: (autoFit: boolean) => dispatch({ type: "setAutoFit", autoFit }),
+      setFontSize: (fontSize: number) =>
+        dispatch({ type: "setFontSize", fontSize }),
       reset: () => dispatch({ type: "reset" }),
     }),
     []
